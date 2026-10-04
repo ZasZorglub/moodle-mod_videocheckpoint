@@ -1,0 +1,40 @@
+.mod-interactivevideo {
+    max-width: 72rem;
+    margin-inline: auto;
+}
+
+.mod-interactivevideo__stage {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: #000;
+}
+
+.mod-interactivevideo__media {
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+
+.mod-interactivevideo__progress {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    margin-block: 1rem;
+}
+
+.mod-interactivevideo__progress progress {
+    width: min(32rem, 80%);
+}
+
+.mod-interactivevideo__question {
+    padding: 1rem;
+    border: 1px solid var(--bs-border-color, #dee2e6);
+    border-radius: .5rem;
+    background: var(--bs-body-bg, #fff);
+}
+
+.mod-interactivevideo__option {
+    display: block;
+    padding: .5rem;
+}

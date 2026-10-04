@@ -1,0 +1,26 @@
+<div class="mod-interactivevideo" data-region="interactivevideo">
+    <div class="mod-interactivevideo__stage">
+        {{#upload}}
+            <video class="mod-interactivevideo__media" data-region="media" controls playsinline preload="metadata">
+                <source src="{{url}}" type="video/mp4">
+            </video>
+        {{/upload}}
+        {{#vimeo}}
+            <iframe class="mod-interactivevideo__media" data-region="vimeo" src="{{url}}"
+                allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="Vimeo video"></iframe>
+        {{/vimeo}}
+    </div>
+    <div class="mod-interactivevideo__progress" aria-live="polite">
+        <progress data-region="progress" max="100" value="{{percent}}"></progress>
+        <span data-region="progress-label">{{progresslabel}}</span>
+    </div>
+    <section class="mod-interactivevideo__question" data-region="question" hidden tabindex="-1">
+        <h3 data-region="question-text"></h3>
+        <form data-region="answer-form">
+            <fieldset data-region="options"></fieldset>
+            <button type="submit" class="btn btn-primary" data-region="submit-answer"></button>
+        </form>
+        <div class="alert mt-3" data-region="feedback" hidden aria-live="assertive"></div>
+        <button type="button" class="btn btn-primary mt-3" data-region="continue" hidden></button>
+    </section>
+</div>
