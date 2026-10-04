@@ -128,13 +128,14 @@ function interactivevideo_pluginfile($course, $cm, $context, string $filearea, a
     }
     require_login($course, true, $cm);
     require_capability('mod/interactivevideo:view', $context);
+    $itemid = (int)array_shift($args);
     $filename = array_pop($args);
     $filepath = $args ? '/' . implode('/', $args) . '/' : '/';
-    $file = get_file_storage()->get_file($context->id, 'mod_interactivevideo', 'video', 0, $filepath, $filename);
+    $file = get_file_storage()->get_file($context->id, 'mod_interactivevideo', 'video', $itemid, $filepath, $filename);
     if (!$file || $file->is_directory()) {
         return false;
     }
-    send_stored_file($file, DAY_SECS, 0, false, $options);
+    send_stored_file($file, DAYSECS, 0, false, $options);
 }
 
 function interactivevideo_get_coursemodule_info(stdClass $coursemodule): cached_cm_info|false {
@@ -153,8 +154,8 @@ function interactivevideo_get_coursemodule_info(stdClass $coursemodule): cached_
         $info->customdata['customcompletionrules'] = [
             'completionwatch' => $activity->completionwatch,
             'completionquestions' => $activity->completionquestions,
-            'completionpercent' => $activity->completionpercent,
         ];
+        $info->customdata['watchpercent'] = $activity->completionpercent;
     }
     return $info;
 }
@@ -162,7 +163,7 @@ function interactivevideo_get_coursemodule_info(stdClass $coursemodule): cached_
 function interactivevideo_get_completion_active_rule_descriptions($cm): array {
     $rules = [];
     if (!empty($cm->customdata['customcompletionrules']['completionwatch'])) {
-        $rules[] = get_string('completiondetail:watch', 'interactivevideo', $cm->customdata['completionpercent'] ?? 90);
+        $rules[] = get_string('completiondetail:watch', 'interactivevideo', $cm->customdata['watchpercent'] ?? 90);
     }
     if (!empty($cm->customdata['customcompletionrules']['completionquestions'])) {
         $rules[] = get_string('completiondetail:questions', 'interactivevideo');
