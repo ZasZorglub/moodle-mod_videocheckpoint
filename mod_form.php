@@ -46,7 +46,10 @@ class mod_interactivevideo_mod_form extends moodleform_mod {
         $mform->addElement('header', 'checkpoints', get_string('checkpoints', 'interactivevideo'));
         $repeat = [];
         $repeat[] = $mform->createElement('hidden', 'cueid', 0);
-        $repeat[] = $mform->createElement('text', 'cuetime', get_string('cuetime', 'interactivevideo'), ['size' => 8]);
+        $repeat[] = $mform->createElement('select', 'cueminute', get_string('cueminute', 'interactivevideo'),
+            array_combine(range(0, 180), range(0, 180)));
+        $repeat[] = $mform->createElement('select', 'cuesec', get_string('cuesec', 'interactivevideo'),
+            array_combine(range(0, 59), range(0, 59)));
         $repeat[] = $mform->createElement('textarea', 'questiontext', get_string('questiontext', 'interactivevideo'), ['rows' => 2, 'cols' => 60]);
         $repeat[] = $mform->createElement('text', 'optiona', get_string('optiona', 'interactivevideo'), ['size' => 50]);
         $repeat[] = $mform->createElement('text', 'optionb', get_string('optionb', 'interactivevideo'), ['size' => 50]);
@@ -60,7 +63,8 @@ class mod_interactivevideo_mod_form extends moodleform_mod {
 
         $options = [
             'cueid' => ['type' => PARAM_INT],
-            'cuetime' => ['type' => PARAM_INT],
+            'cueminute' => ['type' => PARAM_INT],
+            'cuesec' => ['type' => PARAM_INT],
             'questiontext' => ['type' => PARAM_TEXT],
             'optiona' => ['type' => PARAM_TEXT],
             'optionb' => ['type' => PARAM_TEXT],
@@ -80,6 +84,9 @@ class mod_interactivevideo_mod_form extends moodleform_mod {
 
     public function data_preprocessing(&$defaultvalues): void {
         global $DB;
+        if (isset($defaultvalues['completionpercent'])) {
+            $defaultvalues['watchpercent'] = (int)$defaultvalues['completionpercent'];
+        }
         if (empty($this->_instance)) {
             return;
         }
@@ -97,7 +104,8 @@ class mod_interactivevideo_mod_form extends moodleform_mod {
         foreach ($cues as $index => $cue) {
             $answers = json_decode($cue->optionsjson, true) ?: [];
             $defaultvalues["cueid[$index]"] = $cue->id;
-            $defaultvalues["cuetime[$index]"] = $cue->timeposition;
+            $defaultvalues["cueminute[$index]"] = (int)floor($cue->timeposition / 60);
+            $defaultvalues["cuesec[$index]"] = $cue->timeposition % 60;
             $defaultvalues["questiontext[$index]"] = $cue->questiontext;
             foreach (['a', 'b', 'c', 'd'] as $answerindex => $letter) {
                 $defaultvalues["option{$letter}[$index]"] = $answers[$answerindex] ?? '';
@@ -118,8 +126,13 @@ class mod_interactivevideo_mod_form extends moodleform_mod {
             if (trim($question) === '') {
                 continue;
             }
-            if ((int)($data['cuetime'][$index] ?? -1) < 0) {
-                $errors["cuetime[$index]"] = get_string('invaliddata', 'error');
+            $minute = (int)($data['cueminute'][$index] ?? -1);
+            $second = (int)($data['cuesec'][$index] ?? -1);
+            if ($minute < 0 || $minute > 180) {
+                $errors["cueminute[$index]"] = get_string('invaliddata', 'error');
+            }
+            if ($second < 0 || $second > 59) {
+                $errors["cuesec[$index]"] = get_string('invaliddata', 'error');
             }
             if (trim($data['optiona'][$index] ?? '') === '' || trim($data['optionb'][$index] ?? '') === '') {
                 $errors["optiona[$index]"] = get_string('required');
@@ -134,10 +147,10 @@ class mod_interactivevideo_mod_form extends moodleform_mod {
         $questions = 'completionquestions' . $this->get_suffix();
         $mform->addElement('advcheckbox', $watch, '', get_string('completionwatch', 'interactivevideo'));
         $mform->setDefault($watch, 1);
-        $mform->addElement('text', 'completionpercent', get_string('completionpercent', 'interactivevideo'), ['size' => 4]);
-        $mform->setType('completionpercent', PARAM_INT);
-        $mform->setDefault('completionpercent', 90);
-        $mform->hideIf('completionpercent', $watch, 'notchecked');
+        $mform->addElement('text', 'watchpercent', get_string('completionpercent', 'interactivevideo'), ['size' => 4]);
+        $mform->setType('watchpercent', PARAM_INT);
+        $mform->setDefault('watchpercent', 90);
+        $mform->hideIf('watchpercent', $watch, 'notchecked');
         $mform->addElement('advcheckbox', $questions, '', get_string('completionquestions', 'interactivevideo'));
         $mform->setDefault($questions, 1);
         return [$watch, $questions];

@@ -18,6 +18,8 @@ function interactivevideo_supports(string $feature): bool|string|null {
 
 function interactivevideo_add_instance(stdClass $data, ?mod_interactivevideo_mod_form $mform = null): int {
     global $DB;
+    $data->completionpercent = (int)($data->watchpercent ?? 90);
+    unset($data->watchpercent);
     $data->timecreated = time();
     $data->timemodified = $data->timecreated;
     $data->id = $DB->insert_record('interactivevideo', $data);
@@ -31,6 +33,8 @@ function interactivevideo_add_instance(stdClass $data, ?mod_interactivevideo_mod
 
 function interactivevideo_update_instance(stdClass $data, ?mod_interactivevideo_mod_form $mform = null): bool {
     global $DB;
+    $data->completionpercent = (int)($data->watchpercent ?? $DB->get_field('interactivevideo', 'completionpercent', ['id' => $data->instance]));
+    unset($data->watchpercent);
     $data->id = $data->instance;
     $data->timemodified = time();
     $result = $DB->update_record('interactivevideo', $data);
@@ -90,7 +94,8 @@ function interactivevideo_save_cues(stdClass $data): void {
         $cueid = (int)($data->cueid[$index] ?? 0);
         $cue = (object) [
             'interactivevideoid' => $data->id,
-            'timeposition' => max(0, (int)($data->cuetime[$index] ?? 0)),
+            'timeposition' => max(0, (int)($data->cueminute[$index] ?? 0) * 60
+                + (int)($data->cuesec[$index] ?? 0)),
             'questiontext' => $questiontext,
             'optionsjson' => json_encode($options, JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR),
             'correctanswer' => min((int)($data->correctanswer[$index] ?? 0), count($options) - 1),

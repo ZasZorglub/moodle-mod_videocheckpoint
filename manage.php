@@ -62,13 +62,14 @@ if (!$drafts) {
     echo $OUTPUT->notification(get_string('nodrafts', 'interactivevideo'), 'info');
 } else {
     $table = new html_table();
-    $table->head = [get_string('cuetime', 'interactivevideo'), get_string('questiontext', 'interactivevideo'),
+    $table->head = [get_string('cueminute', 'interactivevideo') . ' / ' . get_string('cuesec', 'interactivevideo'),
+        get_string('questiontext', 'interactivevideo'),
         get_string('actions')];
     foreach ($drafts as $draft) {
         $publishurl = new moodle_url($PAGE->url, ['action' => 'publish', 'cueid' => $draft->id, 'sesskey' => sesskey()]);
         $deleteurl = new moodle_url($PAGE->url, ['action' => 'delete', 'cueid' => $draft->id, 'sesskey' => sesskey()]);
         $table->data[] = [
-            format_time($draft->timeposition),
+            sprintf('%d:%02d', (int)floor($draft->timeposition / 60), $draft->timeposition % 60),
             format_string($draft->questiontext),
             html_writer::link($publishurl, get_string('publish', 'interactivevideo')) . ' · '
                 . html_writer::link($deleteurl, get_string('delete', 'interactivevideo')),
