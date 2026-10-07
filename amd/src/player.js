@@ -1,16 +1,37 @@
-// This file is part of Moodle - https://moodle.org/
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * Video Checkpoint player.
+ *
+ * @module     mod_videocheckpoint/player
+ * @copyright  2026 Simple Solutions
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 define(['core/ajax', 'core/notification'], function(Ajax, Notification) {
 
 const fetchMany = Ajax.call;
 
 const recordProgress = (cmid, start, end, duration) => fetchMany([{
-    methodname: 'mod_interactivevideo_record_progress',
+    methodname: 'mod_videocheckpoint_record_progress',
     args: {cmid, start, end, duration},
 }])[0];
 
 const submitAnswer = (cmid, cueid, answer) => fetchMany([{
-    methodname: 'mod_interactivevideo_submit_answer',
+    methodname: 'mod_videocheckpoint_submit_answer',
     args: {cmid, cueid, answer},
 }])[0];
 
@@ -19,7 +40,7 @@ const loadVimeoSdk = () => new Promise((resolve, reject) => {
         resolve(window.Vimeo);
         return;
     }
-    const existing = document.querySelector('script[data-mod-interactivevideo-vimeo]');
+    const existing = document.querySelector('script[data-mod-videocheckpoint-vimeo]');
     if (existing) {
         existing.addEventListener('load', () => resolve(window.Vimeo), {once: true});
         existing.addEventListener('error', reject, {once: true});
@@ -27,7 +48,7 @@ const loadVimeoSdk = () => new Promise((resolve, reject) => {
     }
     const script = document.createElement('script');
     script.src = 'https://player.vimeo.com/api/player.js';
-    script.dataset.modInteractivevideoVimeo = '1';
+    script.dataset.modVideocheckpointVimeo = '1';
     script.addEventListener('load', () => resolve(window.Vimeo), {once: true});
     script.addEventListener('error', reject, {once: true});
     document.head.append(script);
@@ -75,7 +96,7 @@ const setupQuestion = (root, adapter, config, cue, completed) => {
     options.replaceChildren();
     cue.options.forEach((option, index) => {
         const label = document.createElement('label');
-        label.className = 'mod-interactivevideo__option';
+        label.className = 'mod-videocheckpoint__option';
         const input = document.createElement('input');
         input.type = 'radio';
         input.name = 'answer';
@@ -116,7 +137,7 @@ const setupQuestion = (root, adapter, config, cue, completed) => {
 };
 
 const init = async config => {
-    const root = document.querySelector('[data-region="interactivevideo"]');
+    const root = document.querySelector('[data-region="videocheckpoint"]');
     if (!root) {
         return;
     }

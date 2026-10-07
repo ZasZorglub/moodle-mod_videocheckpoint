@@ -1,20 +1,33 @@
-<div class="mod-interactivevideo" data-region="interactivevideo">
-    <div class="mod-interactivevideo__stage">
+{{!
+    @template mod_videocheckpoint/player
+
+    Video player with progress and checkpoint-question controls.
+
+    Example context (json):
+    {
+        "type": "upload",
+        "url": "https://example.test/video.mp4",
+        "progress": 25,
+        "progresslabel": "25% watched"
+    }
+}}
+<div class="mod-videocheckpoint" data-region="videocheckpoint">
+    <div class="mod-videocheckpoint__stage">
         {{#upload}}
-            <video class="mod-interactivevideo__media" data-region="media" controls playsinline preload="metadata">
+            <video class="mod-videocheckpoint__media" data-region="media" controls playsinline preload="metadata">
                 <source src="{{url}}" type="video/mp4">
             </video>
         {{/upload}}
         {{#vimeo}}
-            <iframe class="mod-interactivevideo__media" data-region="vimeo" src="{{url}}"
+            <iframe class="mod-videocheckpoint__media" data-region="vimeo" src="{{url}}"
                 allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="Vimeo video"></iframe>
         {{/vimeo}}
     </div>
-    <div class="mod-interactivevideo__progress" aria-live="polite">
+    <div class="mod-videocheckpoint__progress" aria-live="polite">
         <progress data-region="progress" max="100" value="{{percent}}"></progress>
         <span data-region="progress-label">{{progresslabel}}</span>
     </div>
-    <section class="mod-interactivevideo__question" data-region="question" hidden tabindex="-1">
+    <section class="mod-videocheckpoint__question" data-region="question" hidden tabindex="-1">
         <h3 data-region="question-text"></h3>
         <form data-region="answer-form">
             <fieldset data-region="options"></fieldset>

@@ -1,13 +1,29 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="mod/interactivevideo/db" VERSION="20261004" COMMENT="XMLDB file for mod_interactivevideo"
+<!--
+  This file is part of Moodle - http://moodle.org/
+
+  Moodle is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  Moodle is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with Moodle. If not, see <http://www.gnu.org/licenses/>.
+-->
+<XMLDB PATH="mod/videocheckpoint/db" VERSION="20261004" COMMENT="XMLDB file for mod_videocheckpoint"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd">
   <TABLES>
-    <TABLE NAME="interactivevideo" COMMENT="Interactive video activity settings">
+    <TABLE NAME="videocheckpoint" COMMENT="Video Checkpoint activity settings">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="course" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
-        <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" DEFAULT=""/>
+        <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true"/>
         <FIELD NAME="intro" TYPE="text" NOTNULL="false"/>
         <FIELD NAME="introformat" TYPE="int" LENGTH="4" NOTNULL="true" DEFAULT="0"/>
         <FIELD NAME="videosource" TYPE="char" LENGTH="20" NOTNULL="true" DEFAULT="upload"/>
@@ -25,10 +41,10 @@
         <KEY NAME="course" TYPE="foreign" FIELDS="course" REFTABLE="course" REFFIELDS="id"/>
       </KEYS>
     </TABLE>
-    <TABLE NAME="interactivevideo_cues" COMMENT="Questions shown at configured video positions">
+    <TABLE NAME="videocheckpoint_cues" COMMENT="Questions shown at configured video positions">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-        <FIELD NAME="interactivevideoid" TYPE="int" LENGTH="10" NOTNULL="true"/>
+        <FIELD NAME="videocheckpointid" TYPE="int" LENGTH="10" NOTNULL="true"/>
         <FIELD NAME="timeposition" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
         <FIELD NAME="questiontext" TYPE="text" NOTNULL="true"/>
         <FIELD NAME="optionsjson" TYPE="text" NOTNULL="true"/>
@@ -42,16 +58,16 @@
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
-        <KEY NAME="activity" TYPE="foreign" FIELDS="interactivevideoid" REFTABLE="interactivevideo" REFFIELDS="id"/>
+        <KEY NAME="activity" TYPE="foreign" FIELDS="videocheckpointid" REFTABLE="videocheckpoint" REFFIELDS="id"/>
       </KEYS>
       <INDEXES>
-        <INDEX NAME="activity-position" UNIQUE="false" FIELDS="interactivevideoid,timeposition"/>
+        <INDEX NAME="activity-position" UNIQUE="false" FIELDS="videocheckpointid,timeposition"/>
       </INDEXES>
     </TABLE>
-    <TABLE NAME="interactivevideo_progress" COMMENT="Calculated learner progress">
+    <TABLE NAME="videocheckpoint_progress" COMMENT="Calculated learner progress">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-        <FIELD NAME="interactivevideoid" TYPE="int" LENGTH="10" NOTNULL="true"/>
+        <FIELD NAME="videocheckpointid" TYPE="int" LENGTH="10" NOTNULL="true"/>
         <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true"/>
         <FIELD NAME="duration" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
         <FIELD NAME="watchedseconds" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
@@ -64,17 +80,17 @@
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
-        <KEY NAME="activity" TYPE="foreign" FIELDS="interactivevideoid" REFTABLE="interactivevideo" REFFIELDS="id"/>
+        <KEY NAME="activity" TYPE="foreign" FIELDS="videocheckpointid" REFTABLE="videocheckpoint" REFFIELDS="id"/>
         <KEY NAME="user" TYPE="foreign" FIELDS="userid" REFTABLE="user" REFFIELDS="id"/>
       </KEYS>
       <INDEXES>
-        <INDEX NAME="activity-user" UNIQUE="true" FIELDS="interactivevideoid,userid"/>
+        <INDEX NAME="activity-user" UNIQUE="true" FIELDS="videocheckpointid,userid"/>
       </INDEXES>
     </TABLE>
-    <TABLE NAME="interactivevideo_segments" COMMENT="Observed playback intervals used to calculate progress">
+    <TABLE NAME="videocheckpoint_segments" COMMENT="Observed playback intervals used to calculate progress">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-        <FIELD NAME="interactivevideoid" TYPE="int" LENGTH="10" NOTNULL="true"/>
+        <FIELD NAME="videocheckpointid" TYPE="int" LENGTH="10" NOTNULL="true"/>
         <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true"/>
         <FIELD NAME="starttime" TYPE="int" LENGTH="10" NOTNULL="true"/>
         <FIELD NAME="endtime" TYPE="int" LENGTH="10" NOTNULL="true"/>
@@ -82,14 +98,14 @@
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
-        <KEY NAME="activity" TYPE="foreign" FIELDS="interactivevideoid" REFTABLE="interactivevideo" REFFIELDS="id"/>
+        <KEY NAME="activity" TYPE="foreign" FIELDS="videocheckpointid" REFTABLE="videocheckpoint" REFFIELDS="id"/>
         <KEY NAME="user" TYPE="foreign" FIELDS="userid" REFTABLE="user" REFFIELDS="id"/>
       </KEYS>
       <INDEXES>
-        <INDEX NAME="activity-user-time" UNIQUE="false" FIELDS="interactivevideoid,userid,starttime,endtime"/>
+        <INDEX NAME="activity-user-time" UNIQUE="false" FIELDS="videocheckpointid,userid,starttime,endtime"/>
       </INDEXES>
     </TABLE>
-    <TABLE NAME="interactivevideo_answers" COMMENT="Learner answers to checkpoint questions">
+    <TABLE NAME="videocheckpoint_answers" COMMENT="Learner answers to checkpoint questions">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="cueid" TYPE="int" LENGTH="10" NOTNULL="true"/>
@@ -100,7 +116,7 @@
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
-        <KEY NAME="cue" TYPE="foreign" FIELDS="cueid" REFTABLE="interactivevideo_cues" REFFIELDS="id"/>
+        <KEY NAME="cue" TYPE="foreign" FIELDS="cueid" REFTABLE="videocheckpoint_cues" REFFIELDS="id"/>
         <KEY NAME="user" TYPE="foreign" FIELDS="userid" REFTABLE="user" REFFIELDS="id"/>
       </KEYS>
       <INDEXES>
