@@ -23,7 +23,8 @@ final class progress {
     }
 
     public static function recalculate(\stdClass $activity, int $userid, int $duration = 0): \stdClass {
-        global $DB;
+        global $CFG, $DB;
+        require_once($CFG->dirroot . '/mod/interactivevideo/lib.php');
         $segments = $DB->get_records('interactivevideo_segments', [
             'interactivevideoid' => $activity->id,
             'userid' => $userid,
@@ -78,13 +79,39 @@ final class progress {
             $record->id = $DB->insert_record('interactivevideo_progress', $record);
         }
         if ($record->grade !== null) {
-            interactivevideo_grade_item_update($activity, [(object) [
+            \interactivevideo_grade_item_update($activity, [(object) [
                 'userid' => $userid,
                 'rawgrade' => $record->grade,
             ]]);
         }
         self::update_completion($activity, $userid);
         return $record;
+    }
+
+    /**
+     * Recalculate every learner who has stored activity data.
+     *
+     * This keeps grades and completion accurate when completion settings or
+     * published checkpoint requirements change after learners have started.
+     */
+    public static function recalculate_all(\stdClass $activity): void {
+        global $DB;
+        $sql = "SELECT userid
+                  FROM {interactivevideo_progress}
+                 WHERE interactivevideoid = ?
+                 UNION
+                SELECT userid
+                  FROM {interactivevideo_segments}
+                 WHERE interactivevideoid = ?
+                 UNION
+                SELECT a.userid
+                  FROM {interactivevideo_answers} a
+                  JOIN {interactivevideo_cues} c ON c.id = a.cueid
+                 WHERE c.interactivevideoid = ?";
+        $userids = $DB->get_fieldset_sql($sql, [$activity->id, $activity->id, $activity->id]);
+        foreach ($userids as $userid) {
+            self::recalculate($activity, (int)$userid);
+        }
     }
 
     public static function union_seconds(array $segments): int {

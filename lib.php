@@ -41,7 +41,9 @@ function interactivevideo_update_instance(stdClass $data, ?mod_interactivevideo_
     $context = context_module::instance($data->coursemodule);
     interactivevideo_save_video_file($data, $context);
     interactivevideo_save_cues($data);
-    interactivevideo_grade_item_update($data);
+    $activity = $DB->get_record('interactivevideo', ['id' => $data->id], '*', MUST_EXIST);
+    interactivevideo_grade_item_update($activity);
+    \mod_interactivevideo\local\progress::recalculate_all($activity);
     return $result;
 }
 

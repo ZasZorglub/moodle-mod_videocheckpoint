@@ -26,6 +26,7 @@ if ($action !== '' && $cueid) {
     ], '*', MUST_EXIST);
     if ($action === 'publish') {
         $DB->set_field('interactivevideo_cues', 'status', 'published', ['id' => $cue->id]);
+        \mod_interactivevideo\local\progress::recalculate_all($activity);
     } else if ($action === 'delete') {
         $DB->delete_records('interactivevideo_answers', ['cueid' => $cue->id]);
         $DB->delete_records('interactivevideo_cues', ['id' => $cue->id]);

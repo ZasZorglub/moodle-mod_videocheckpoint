@@ -118,9 +118,20 @@ class mod_interactivevideo_mod_form extends moodleform_mod {
 
     public function validation($data, $files): array {
         $errors = parent::validation($data, $files);
+        if (($data['videosource'] ?? '') === 'upload') {
+            $draftid = (int)($data['videofile'] ?? 0);
+            $draftinfo = $draftid ? file_get_draft_area_info($draftid) : ['filecount' => 0];
+            if (empty($draftinfo['filecount'])) {
+                $errors['videofile'] = get_string('required');
+            }
+        }
         if (($data['videosource'] ?? '') === 'vimeo'
                 && !\mod_interactivevideo\local\video::vimeo_id($data['videourl'] ?? '')) {
             $errors['videourl'] = get_string('invalidvimeourl', 'interactivevideo');
+        }
+        $watchpercent = (int)($data['watchpercent'] ?? 90);
+        if ($watchpercent < 1 || $watchpercent > 100) {
+            $errors['watchpercent'] = get_string('invalidwatchpercent', 'interactivevideo');
         }
         foreach (($data['questiontext'] ?? []) as $index => $question) {
             if (trim($question) === '') {
@@ -136,6 +147,20 @@ class mod_interactivevideo_mod_form extends moodleform_mod {
             }
             if (trim($data['optiona'][$index] ?? '') === '' || trim($data['optionb'][$index] ?? '') === '') {
                 $errors["optiona[$index]"] = get_string('required');
+            }
+            $optionkeys = ['optiona', 'optionb', 'optionc', 'optiond'];
+            $correctanswer = (int)($data['correctanswer'][$index] ?? -1);
+            if ($correctanswer < 0 || $correctanswer > 3
+                    || trim($data[$optionkeys[$correctanswer]][$index] ?? '') === '') {
+                $errors["correctanswer[$index]"] = get_string('invalidcorrectanswer', 'interactivevideo');
+            }
+            $emptyoptionfound = false;
+            foreach ($optionkeys as $optionkey) {
+                if (trim($data[$optionkey][$index] ?? '') === '') {
+                    $emptyoptionfound = true;
+                } else if ($emptyoptionfound) {
+                    $errors["{$optionkey}[$index]"] = get_string('optiongap', 'interactivevideo');
+                }
             }
         }
         return $errors;

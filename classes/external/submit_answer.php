@@ -28,6 +28,7 @@ final class submit_answer extends external_api {
         $cue = $DB->get_record('interactivevideo_cues', [
             'id' => $cueid,
             'interactivevideoid' => $cm->instance,
+            'status' => 'published',
         ], '*', MUST_EXIST);
         $options = json_decode($cue->optionsjson, true) ?: [];
         if (!array_key_exists($answer, $options)) {

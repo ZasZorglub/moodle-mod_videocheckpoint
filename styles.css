@@ -24,7 +24,25 @@
 }
 
 .mod-interactivevideo__progress progress {
-    width: min(32rem, 80%);
+    flex: 1 1 auto;
+    width: min(32rem, 100%);
+    min-width: 0;
+}
+
+.mod-interactivevideo__progress [data-region="progress-label"] {
+    flex: 0 0 auto;
+    white-space: nowrap;
+}
+
+@media (max-width: 35.999rem) {
+    .mod-interactivevideo__progress {
+        flex-wrap: wrap;
+        padding-inline-end: 3rem;
+    }
+
+    .mod-interactivevideo__progress progress {
+        flex-basis: 100%;
+    }
 }
 
 .mod-interactivevideo__question {
