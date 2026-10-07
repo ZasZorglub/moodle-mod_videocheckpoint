@@ -1,5 +1,9 @@
 # Change log
 
+## 1.0.0-beta.2 - 2026-10-07
+
+- Add the required empty upgrade entry point for Marketplace validation.
+
 ## 1.0.0-beta.1 - 2026-10-07
 
 - Renamed the plugin to Video Checkpoint with the unique component `mod_videocheckpoint`.

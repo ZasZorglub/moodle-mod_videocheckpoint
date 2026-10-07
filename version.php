@@ -25,7 +25,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'mod_videocheckpoint';
-$plugin->version = 2026100700;
+$plugin->version = 2026100701;
 $plugin->requires = 2026041000;
 $plugin->maturity = MATURITY_BETA;
-$plugin->release = '1.0.0-beta.1';
+$plugin->release = '1.0.0-beta.2';
