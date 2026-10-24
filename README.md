@@ -46,6 +46,28 @@ For Vimeo, the learner's browser connects directly to Vimeo. Vimeo may process t
 the site's Vimeo agreement and privacy notice. When AI generation is requested, the transcript and generation
 instructions are sent through the AI provider configured in Moodle.
 
+## Screenshots
+
+### Learner video player
+
+![Video Checkpoint player with Vimeo video and watched progress](docs/screenshots/01-player-view.jpg)
+
+### Checkpoint question
+
+![A checkpoint pauses playback and asks the learner a multiple-choice question](docs/screenshots/05-checkpoint-question.jpg)
+
+### Feedback after an incorrect answer
+
+![An incorrect answer shows both the retry message and teacher-authored feedback](docs/screenshots/06-incorrect-answer-feedback.jpg)
+
+### Teacher settings
+
+![Teacher settings for the video source](docs/screenshots/02-video-source-settings.jpg)
+
+![Checkpoint time, question and answer settings](docs/screenshots/03-checkpoint-settings.jpg)
+
+![Correct-answer and feedback settings](docs/screenshots/04-answer-feedback-settings.jpg)
+
 ## Privacy and data
 
 The plugin stores watched intervals, calculated progress and submitted checkpoint answers. It implements Moodle's

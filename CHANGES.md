@@ -1,5 +1,10 @@
 # Change log
 
+## 1.0.0-beta.3 - 2026-10-24
+
+- Regenerate the AMD player artifact with Moodle's supported Grunt toolchain.
+- Include the generated source map for the minified player module.
+
 ## 1.0.0-beta.2 - 2026-10-07
 
 - Add the required empty upgrade entry point for Marketplace validation.
